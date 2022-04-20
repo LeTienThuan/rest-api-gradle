@@ -7,10 +7,12 @@ import com.example.demo.entity.Orders;
 import com.example.demo.mapper.CustomerMapper;
 import com.example.demo.mapper.OrderDetailMapper;
 import com.example.demo.mapper.OrderMapper;
+import com.example.demo.repository.OrderDetailRepository;
 import com.example.demo.repository.OrderRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,28 +35,23 @@ public class OrderService {
         orderRepository.deleteById(id);
     }
 
-    public void updateOrderDetails(int id, OrderDTO orderDto, Orders order) {
-        List<OrderDetail> orderDetails = orderDetailService.getByOrderId(id);
-        List<OrderDetailDTO> orderDetailsDto = orderDto.getOrderDetail();
-
-        int sizeOrderDetails = orderDetails.size();
-        int sizeOrderDetailsDto = orderDetailsDto.size();
-
-        if (sizeOrderDetails > sizeOrderDetailsDto) {
-            for (int i = sizeOrderDetailsDto; i < sizeOrderDetails; i++) {
-                orderDetailService.deleteById(orderDetails.get(i).getId());
+    public List<Integer> getListIdOrderDetailFromRequest(List<OrderDetailDTO> orderDetailsDto){
+        List<Integer> listId = new ArrayList<>();
+        for(OrderDetailDTO dto : orderDetailsDto) {
+            if (dto.getId() != 0) {
+                listId.add(dto.getId());
             }
         }
-        for (int i = 0; i < sizeOrderDetailsDto; i++) {
-            boolean isInRangeOrderDetailSize = i + 1 <= sizeOrderDetails;
-            OrderDetail orderDetail;
+        return listId;
+    }
+    public void deleteUnuseOrderDetail(int orderId,List<OrderDetailDTO> orderDetailsDto){
+        List<Integer> listId = getListIdOrderDetailFromRequest(orderDetailsDto);
+        List<OrderDetail> entities = orderDetailService.getByOrderId(orderId);
 
-            if (isInRangeOrderDetailSize) {
-                orderDetail = orderDetailMapper.convertToEntity(orderDetails.get(i), orderDetailsDto.get(i));
-            } else {
-                orderDetail = orderDetailMapper.convertToEntity(orderDetailsDto.get(i), order);
-            }
-            orderDetailService.update(orderDetail);
+        for(OrderDetail entity : entities){
+            if(!listId.contains(entity.getId())){
+                orderDetailService.deleteById(entity.getId());
+           }
         }
     }
 
@@ -62,11 +59,13 @@ public class OrderService {
         Optional<Orders> unknownOrder = orderRepository.findById(id);
         if (unknownOrder.isPresent()) {
             Orders order = unknownOrder.get();
-            updateOrderDetails(id, orderDto, order);
+
+            deleteUnuseOrderDetail(id, orderDto.getOrderDetail());
+            order.setOrderDetail(orderDetailMapper.convertToEntity(orderDto.getOrderDetail(), order, orderDetailMapper));
             order.setDeliveryAddress(orderDto.getDeliveryAddress());
             order.setCustomer(customerMapper.convertToEntityBelongToOrder(orderDto.getCustomer()));
-            orderRepository.save(order);
 
+            orderRepository.save(order);
             return orderMapper.convertToDto(order, customerMapper, orderDetailMapper);
         } else {
             return null;

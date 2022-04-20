@@ -25,11 +25,22 @@ public interface OrderDetailMapper {
     @Mapping(target = "orders", ignore = true)
     OrderDetail convertToEntity(@MappingTarget OrderDetail orderDetail, OrderDetailDTO orderDetailDto);
 
+    default OrderDetail convertToEntityWithId(OrderDetailDTO dto, Orders order){
+        OrderDetail entity = new OrderDetail();
+        entity.setOrders(order);
+        entity.setId(dto.getId());
+        entity.setPrice(dto.getPrice());
+        entity.setProductId(dto.getProductId());
+        entity.setQuantity(dto.getQuantity());
+        entity.setTotal(dto.getTotal());
+        return entity;
+    }
+
 
     default List<OrderDetail> convertToEntity(List<OrderDetailDTO> orderDetailDto, Orders order, OrderDetailMapper orderDetailMapper) {
         List<OrderDetail> list = new ArrayList<>();
         for (OrderDetailDTO orderDetailDTO : orderDetailDto) {
-            list.add(orderDetailMapper.convertToEntity(orderDetailDTO, order));
+            list.add(orderDetailMapper.convertToEntityWithId(orderDetailDTO, order));
         }
         return list;
     }
