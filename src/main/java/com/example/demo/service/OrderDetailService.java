@@ -1,8 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.OrderDetail;
-import com.example.demo.entity.Orders;
-import com.example.demo.mapper.OrderDetailMapper;
 import com.example.demo.repository.OrderDetailRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

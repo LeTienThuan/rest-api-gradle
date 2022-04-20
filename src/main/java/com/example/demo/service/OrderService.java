@@ -7,7 +7,6 @@ import com.example.demo.entity.Orders;
 import com.example.demo.mapper.CustomerMapper;
 import com.example.demo.mapper.OrderDetailMapper;
 import com.example.demo.mapper.OrderMapper;
-import com.example.demo.repository.OrderDetailRepository;
 import com.example.demo.repository.OrderRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

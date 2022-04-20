@@ -36,7 +36,6 @@ public interface OrderDetailMapper {
         return entity;
     }
 
-
     default List<OrderDetail> convertToEntity(List<OrderDetailDTO> orderDetailDto, Orders order, OrderDetailMapper orderDetailMapper) {
         List<OrderDetail> list = new ArrayList<>();
         for (OrderDetailDTO orderDetailDTO : orderDetailDto) {
