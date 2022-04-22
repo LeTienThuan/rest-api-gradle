@@ -1,0 +1,35 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Invoice Order</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="fontclass">
+<h1 th:text="'Invoice Order (ID: ' + ${orderId}+ ')'" ></h1>
+<p style="font-size: 20px">Information Customer</p>
+<ul>
+    <li th:text="'Name: ' + ${customer.getName()}"></li>
+    <li th:text="'Age: ' + ${customer.getAge()}"></li>
+    <li th:text="'Address: ' + ${customer.getAddress()}"></li>
+</ul>
+<table>
+    <tr>
+        <th>Product Name</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Total</th>
+    </tr>
+    <tr th:each="item, state : ${items}">
+        <td th:text="${productName.get(state.index)}"></td>
+        <td style="text-align: center" class="quantity" th:text="${item.quantity}"></td>
+        <td style="text-align: right" th:text="${#numbers.formatCurrency(item.getPrice())}"></td>
+        <td style="text-align: right" th:text="${#numbers.formatCurrency(item.getTotal())}"></td>
+    </tr>
+</table>
+<p style="float: right" th:text="'Total Money: ' + ${#numbers.formatCurrency(totalMoney)}"></p>
+</body>
+</html>

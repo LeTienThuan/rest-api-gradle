@@ -75,4 +75,8 @@ public class OrderService {
         List<Orders> orders = orderRepository.findAll();
         return orderMapper.convertToDto(orders, customerMapper, orderMapper, orderDetailMapper);
     }
+
+    public Orders findById(int id){
+        return orderRepository.getById(id);
+    }
 }

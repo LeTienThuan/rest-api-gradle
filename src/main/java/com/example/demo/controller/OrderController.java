@@ -6,8 +6,10 @@ import com.example.demo.service.OrderService;
 import com.example.demo.thymeleaf.PdfTemplate;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -45,7 +47,7 @@ public class OrderController {
 
     @DeleteMapping("/find/{id}")
     public void deleteById(@PathVariable(name = "id") int id){orderDetailService.deleteById(id);}
-    @GetMapping("/html")
-    public String getHTML(){return pdfTemplate.parseThymeleafTemplate();}
+    @GetMapping(path = "/html/{id}")
+    public ResponseEntity<byte[]> getHTML(@PathVariable(name = "id") int id) throws IOException {return pdfTemplate.parseThymeleafTemplate(id);}
 }
 

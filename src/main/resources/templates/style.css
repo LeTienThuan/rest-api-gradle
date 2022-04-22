@@ -1,0 +1,21 @@
+@font-face {
+    font-family: myFont;
+    src: local("../BeVietnamPro-Light.ttf");
+}
+.fontclass{
+    font-family: myFont, serif;
+}
+@Page {
+    size: 8.5in 11in;
+    margin: 1in;
+}
+table, th, td{
+    border: 1px solid;
+    width: 100%;
+}
+table{
+    border-collapse: collapse;
+}
+.quantity{
+    text-align: center;
+}
