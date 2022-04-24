@@ -19,11 +19,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final CustomerMapper customerMapper;
     private final OrderDetailService orderDetailService;
-    private final OrderDetailMapper orderDetailMapper;
-
-
     private final OrderMapper orderMapper;
 
     public int create() {
@@ -43,7 +39,7 @@ public class OrderService {
         }
         return listId;
     }
-    public void deleteUnuseOrderDetail(int orderId,List<OrderDetailDTO> orderDetailsDto){
+    public void removeUnuseOrderDetail(int orderId,List<OrderDetailDTO> orderDetailsDto){
         List<Integer> listId = getListIdOrderDetailFromRequest(orderDetailsDto);
         List<OrderDetail> entities = orderDetailService.getByOrderId(orderId);
 
@@ -57,15 +53,10 @@ public class OrderService {
     public OrderDTO update(int id, OrderDTO orderDto) {
         Optional<Orders> unknownOrder = orderRepository.findById(id);
         if (unknownOrder.isPresent()) {
-            Orders order = unknownOrder.get();
-
-            deleteUnuseOrderDetail(id, orderDto.getOrderDetail());
-            order.setOrderDetail(orderDetailMapper.convertToEntity(orderDto.getOrderDetail(), order, orderDetailMapper));
-            order.setDeliveryAddress(orderDto.getDeliveryAddress());
-            order.setCustomer(customerMapper.convertToEntityBelongToOrder(orderDto.getCustomer()));
-
+            Orders order = orderMapper.convertToEntity(orderDto, unknownOrder.get());
+            removeUnuseOrderDetail(id, orderDto.getOrderDetail());
             orderRepository.save(order);
-            return orderMapper.convertToDto(order, customerMapper, orderDetailMapper);
+            return orderMapper.convertToDto(order);
         } else {
             return null;
         }
@@ -73,10 +64,10 @@ public class OrderService {
 
     public List<OrderDTO> findAll() {
         List<Orders> orders = orderRepository.findAll();
-        return orderMapper.convertToDto(orders, customerMapper, orderMapper, orderDetailMapper);
+        return orderMapper.convertToDto(orders);
     }
 
     public Orders findById(int id){
-        return orderRepository.getById(id);
+        return orderRepository.findById(id).get();
     }
 }

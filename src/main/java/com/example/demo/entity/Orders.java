@@ -16,7 +16,7 @@ public class Orders {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Customer customer;
 
     @OneToMany(mappedBy = "orders", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REMOVE})

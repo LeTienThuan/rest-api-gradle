@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.OrderDTO;
 import com.example.demo.service.OrderDetailService;
 import com.example.demo.service.OrderService;
-import com.example.demo.thymeleaf.PdfTemplate;
+import com.example.demo.exportfile.Pdf;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
     private final OrderDetailService orderDetailService;
-    private final PdfTemplate pdfTemplate;
+    private final Pdf pdfTemplate;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -46,8 +46,13 @@ public class OrderController {
     }
 
     @DeleteMapping("/find/{id}")
-    public void deleteById(@PathVariable(name = "id") int id){orderDetailService.deleteById(id);}
-    @GetMapping(path = "/html/{id}")
-    public ResponseEntity<byte[]> getHTML(@PathVariable(name = "id") int id) throws IOException {return pdfTemplate.parseThymeleafTemplate(id);}
+    public void deleteById(@PathVariable(name = "id") int id) {
+        orderDetailService.deleteById(id);
+    }
+
+    @GetMapping(path = "/invoice/{id}")
+    public ResponseEntity<byte[]> getHTML(@PathVariable(name = "id") int id) throws IOException {
+        return pdfTemplate.getInvoicePDF(id);
+    }
 }
 
