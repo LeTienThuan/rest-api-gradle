@@ -4,7 +4,6 @@ import com.example.demo.dto.OrderDTO;
 import com.example.demo.dto.OrderDetailDTO;
 import com.example.demo.entity.OrderDetail;
 import com.example.demo.entity.Orders;
-import com.example.demo.entity.Product;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.mapper.OrderMapper;
 import com.example.demo.repository.OrderRepository;
@@ -69,6 +68,6 @@ public class OrderService {
     }
 
     public Orders findById(int id){
-        return orderRepository.findById(id).get();
+        return findEntity(id).get();
     }
 }
