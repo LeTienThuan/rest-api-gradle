@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.OrderDTO;
 import com.example.demo.service.OrderService;
-import com.example.demo.exportfile.Pdf;
+import com.example.demo.util.PdfGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,6 @@ import java.util.List;
 @RequestMapping(path = "/order")
 public class OrderController {
     private final OrderService orderService;
-    private final Pdf pdfTemplate;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -43,7 +42,7 @@ public class OrderController {
 
     @GetMapping(path = "/invoice/{id}")
     public ResponseEntity<byte[]> getHTML(@PathVariable(name = "id") int id) throws IOException {
-        return pdfTemplate.getInvoicePDF(id);
+        return orderService.getInvoicePDF(id);
     }
 }
 

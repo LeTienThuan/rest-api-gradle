@@ -16,7 +16,6 @@ public class OrderDetailService {
     private final OrderDetailRepository orderDetailRepository;
 
     public List<OrderDetail> getByOrderId(int orderId){
-
         return orderDetailRepository.findByOrdersId(orderId);
     }
 
@@ -35,9 +34,5 @@ public class OrderDetailService {
             productsName.add(productName);
         }
         return productsName;
-    }
-
-    public void deleteById(int id){
-        orderDetailRepository.deleteById(id);
     }
 }
