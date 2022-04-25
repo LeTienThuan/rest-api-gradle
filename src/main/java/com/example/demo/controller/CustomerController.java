@@ -32,7 +32,6 @@ public class CustomerController {
     }
 
     @PutMapping(path = "/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public CustomerDTO update(@PathVariable(name = "id") int id, @RequestBody CustomerDTO customerDto){
         return customerService.update(id, customerDto);
     }

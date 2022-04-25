@@ -4,8 +4,8 @@ import com.example.demo.dto.OrderDTO;
 import com.example.demo.dto.OrderDetailDTO;
 import com.example.demo.entity.OrderDetail;
 import com.example.demo.entity.Orders;
-import com.example.demo.mapper.CustomerMapper;
-import com.example.demo.mapper.OrderDetailMapper;
+import com.example.demo.entity.Product;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.mapper.OrderMapper;
 import com.example.demo.repository.OrderRepository;
 import lombok.AllArgsConstructor;
@@ -50,16 +50,17 @@ public class OrderService {
         }
     }
 
+    public Optional<Orders> findEntity(int id) {
+        return Optional.of(orderRepository.findById(id)
+                .orElseThrow(NotFoundException::new));
+    }
+
     public OrderDTO update(int id, OrderDTO orderDto) {
-        Optional<Orders> unknownOrder = orderRepository.findById(id);
-        if (unknownOrder.isPresent()) {
-            Orders order = orderMapper.convertToEntity(orderDto, unknownOrder.get());
+            Orders order = findEntity(id).get();
+            Orders updatedOrder = orderMapper.convertToEntity(orderDto, order);
             removeUnuseOrderDetail(id, orderDto.getOrderDetail());
             orderRepository.save(order);
-            return orderMapper.convertToDto(order);
-        } else {
-            return null;
-        }
+            return orderMapper.convertToDto(updatedOrder);
     }
 
     public List<OrderDTO> findAll() {

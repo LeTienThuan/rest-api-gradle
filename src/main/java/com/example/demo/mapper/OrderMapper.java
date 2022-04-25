@@ -2,7 +2,6 @@ package com.example.demo.mapper;
 
 import com.example.demo.dto.OrderDTO;
 import com.example.demo.entity.Orders;
-import lombok.AllArgsConstructor;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
