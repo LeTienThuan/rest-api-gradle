@@ -6,8 +6,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,9 +21,9 @@ public abstract class OrderMapper {
     public abstract OrderDTO convertToDto(Orders order);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "customer", expression = "java(customerMapper.convertToEntityBelongToOrder(orderDto.getCustomer()))")
+    @Mapping(target = "customer", expression = "java(customerMapper.convertToEntityWithId(orderDto.getCustomer()))")
     @Mapping(target = "orderDetail", expression = "java(orderDetailMapper.convertToEntity(orderDto.getOrderDetail(), order))")
-    public abstract Orders convertToEntity(OrderDTO orderDto, @MappingTarget Orders order);
+    public abstract Orders updateEntity(OrderDTO orderDto, @MappingTarget Orders order);
 
     public abstract List<OrderDTO> convertToDto(List<Orders> orders);
 }

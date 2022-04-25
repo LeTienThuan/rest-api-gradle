@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.OrderDTO;
 import com.example.demo.service.OrderService;
-import com.example.demo.exportfile.Pdf;
+import com.example.demo.util.PdfGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping(path = "/order")
 public class OrderController {
     private final OrderService orderService;
-    private final Pdf pdfTemplate;
+    private final PdfGenerator pdfTemplate;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)

@@ -27,20 +27,19 @@ public class ProductService {
     }
 
     public int create(ProductDTO productDto) {
-        return productRepository.save(productMapper.convertToEntity(productDto)).getId();
+        Product product = productMapper.convertToEntity(productDto);
+        return productRepository.save(product).getId();
     }
 
     public void deleteById(int id) {
-        Optional<Product> products = productRepository.findById(id);
-        if (products.isPresent()) {
-            productRepository.deleteById(id);
-        }
+        productRepository.deleteById(id);
     }
 
     public ProductDTO update(int id, ProductDTO productDto) {
-        Product updatedProduct = productMapper.convertToEntity(productDto, findEntity(id).get());
-        productRepository.save(updatedProduct);
-        return productMapper.convertToDto(updatedProduct);
+        return findEntity(id)
+                .map(entity -> productMapper.convertToEntity(productDto, entity))
+                .map(productRepository::save)
+                .map(productMapper::convertToDto).get();
     }
 
 }

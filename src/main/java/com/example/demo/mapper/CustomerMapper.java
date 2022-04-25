@@ -16,7 +16,7 @@ public interface CustomerMapper {
     @Mapping(target = "id", ignore = true)
     Customer convertToEntity(CustomerDTO customerDTO);
 
-    Customer convertToEntityBelongToOrder(CustomerDTO customerDto);
+    Customer convertToEntityWithId(CustomerDTO customerDto);
 
     List<CustomerDTO> convertToDto(List<Customer> customers);
 

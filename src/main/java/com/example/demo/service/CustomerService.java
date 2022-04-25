@@ -31,15 +31,13 @@ public class CustomerService {
     }
 
     public void deleteById(int id) {
-        Optional<Customer> customer = customerRepository.findById(id);
-        if (customer.isPresent()) {
-            customerRepository.deleteById(id);
-        }
+        customerRepository.deleteById(id);
     }
 
     public CustomerDTO update(int id, CustomerDTO customerDto) {
-        Customer updatedCustomer = customerMapper.convertToEntity(findEntity(id).get(), customerDto);
-        customerRepository.save(updatedCustomer);
-        return customerMapper.convertToDto(updatedCustomer);
+        return findEntity(id)
+                .map(entity -> customerMapper.convertToEntity(entity, customerDto))
+                .map(customerRepository::save)
+                .map(customerMapper::convertToDto).get();
     }
 }
