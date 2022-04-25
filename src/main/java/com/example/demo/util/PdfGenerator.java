@@ -24,7 +24,6 @@ import java.nio.file.Files;
 @Service
 @AllArgsConstructor
 public class PdfGenerator {
-    private OrderService orderService;
 
     public void readContentFromThymeleaf(String htmlContent, String path) throws IOException {
         FileWriter fw = new FileWriter(path);
@@ -33,7 +32,7 @@ public class PdfGenerator {
         fw.close();
     }
 
-    public String parseThymeleafTemplate(int orderId){
+    public String parseThymeleafTemplate(Context context){
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
         templateResolver.setPrefix("templates/");
         templateResolver.setSuffix(".html");
@@ -42,8 +41,7 @@ public class PdfGenerator {
         TemplateEngine templateEngine = new TemplateEngine();
         templateEngine.setTemplateResolver(templateResolver);
 
-        Context context = orderService.setVariablesInvoiceThymeleafTemplate(orderId);
-        return templateEngine.process("thymeleaf_template", context);
+        return templateEngine.process(Pdf.THYMELEAF_INVOICE , context);
     }
 
     private Document html5ParseDocument(String htmlPath) throws IOException {
@@ -52,32 +50,20 @@ public class PdfGenerator {
         return new W3CDom().fromJsoup(doc);
     }
 
-    private void htmlToPdf() throws IOException {
-        Document doc = html5ParseDocument(Pdf.INVOICE_HTML_GENERATED);
+    public void htmlToPdf(String fontPath, String pdfPath, String htmlPath ) throws IOException {
+        Document doc = html5ParseDocument(htmlPath);
         String baseUri = FileSystems.getDefault()
                 .getPath("src/main/resources/templates")
                 .toUri()
                 .toString();
-        OutputStream os = new FileOutputStream(Pdf.INVOICE_PDF_PATH);
+        OutputStream os = new FileOutputStream(pdfPath);
 
         PdfRendererBuilder builder = new PdfRendererBuilder();
-        builder.withUri(Pdf.INVOICE_PDF_PATH);
+        builder.withUri(pdfPath);
         builder.toStream(os);
-        builder.useFont(new File(Pdf.FONT_VIETNAM_PATH), "myFont");
+        builder.useFont(new File(fontPath), "myFont");
         builder.withW3cDocument(doc, baseUri);
         builder.run();
         os.close();
-    }
-
-    public ResponseEntity<byte[]> getInvoicePDF(int id) throws IOException {
-        String htmlContent= parseThymeleafTemplate(id);
-        readContentFromThymeleaf(htmlContent, Pdf.INVOICE_HTML_GENERATED);
-        htmlToPdf();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
-        File file = new File(Pdf.INVOICE_PDF_PATH);
-        byte[] content =  Files.readAllBytes(file.toPath());
-        return new ResponseEntity<>(content, headers, HttpStatus.OK);
     }
 }

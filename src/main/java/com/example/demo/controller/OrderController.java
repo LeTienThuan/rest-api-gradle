@@ -16,7 +16,6 @@ import java.util.List;
 @RequestMapping(path = "/order")
 public class OrderController {
     private final OrderService orderService;
-    private final PdfGenerator pdfTemplate;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -43,7 +42,7 @@ public class OrderController {
 
     @GetMapping(path = "/invoice/{id}")
     public ResponseEntity<byte[]> getHTML(@PathVariable(name = "id") int id) throws IOException {
-        return pdfTemplate.getInvoicePDF(id);
+        return orderService.getInvoicePDF(id);
     }
 }
 
