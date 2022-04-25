@@ -4,7 +4,6 @@ import com.example.demo.dto.OrderDetailDTO;
 import com.example.demo.entity.OrderDetail;
 import com.example.demo.repository.OrderDetailRepository;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,6 +16,7 @@ public class OrderDetailService {
     private final OrderDetailRepository orderDetailRepository;
 
     public List<OrderDetail> getByOrderId(int orderId){
+
         return orderDetailRepository.findByOrdersId(orderId);
     }
 

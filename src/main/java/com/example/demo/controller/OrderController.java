@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.OrderDTO;
-import com.example.demo.service.OrderDetailService;
 import com.example.demo.service.OrderService;
 import com.example.demo.exportfile.Pdf;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,6 @@ import java.util.List;
 @RequestMapping(path = "/order")
 public class OrderController {
     private final OrderService orderService;
-    private final OrderDetailService orderDetailService;
     private final Pdf pdfTemplate;
 
     @GetMapping
@@ -33,9 +31,7 @@ public class OrderController {
     }
 
     @PutMapping(path = "/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public OrderDTO
-    update(@PathVariable(name = "id") int id, @RequestBody OrderDTO orderDto) {
+    public OrderDTO update(@PathVariable(name = "id") int id, @RequestBody OrderDTO orderDto) {
         return orderService.update(id, orderDto);
     }
 
@@ -43,11 +39,6 @@ public class OrderController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable(name = "id") int id) {
         orderService.delete(id);
-    }
-
-    @DeleteMapping("/find/{id}")
-    public void deleteById(@PathVariable(name = "id") int id) {
-        orderDetailService.deleteById(id);
     }
 
     @GetMapping(path = "/invoice/{id}")
