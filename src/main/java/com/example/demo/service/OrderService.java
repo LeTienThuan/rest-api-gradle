@@ -59,7 +59,7 @@ public class OrderService {
             Orders order = findEntity(id).get();
             Orders updatedOrder = orderMapper.convertToEntity(orderDto, order);
             removeUnuseOrderDetail(id, orderDto.getOrderDetail());
-            orderRepository.save(order);
+            orderRepository.save(updatedOrder);
             return orderMapper.convertToDto(updatedOrder);
     }
 
