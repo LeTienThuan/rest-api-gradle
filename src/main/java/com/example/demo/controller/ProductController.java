@@ -12,27 +12,27 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping(path = "/product")
 public class ProductController {
-    private final ProductService productService;
+    private final ProductService service;
 
     @GetMapping
     public List<ProductDTO> findAll() {
-        return productService.findAll();
+        return service.findAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public int create(@RequestBody ProductDTO productDto) {
-        return productService.create(productDto);
+        return service.create(productDto);
     }
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable(name = "id") int id) {
-        productService.deleteById(id);
+        service.deleteById(id);
     }
 
     @PutMapping(path = "/{id}")
     public ProductDTO update(@PathVariable(name = "id") int id, @RequestBody ProductDTO productDto) {
-        return productService.update(id, productDto);
+        return service.update(id, productDto);
     }
 }

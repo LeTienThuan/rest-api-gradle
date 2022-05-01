@@ -10,36 +10,46 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class ProductService {
-    private final ProductRepository productRepository;
-    private final ProductMapper productMapper;
+    private final ProductRepository repository;
+    private final ProductMapper mapper;
 
     public Optional<Product> findEntity(int id) {
-        return Optional.of(productRepository.findById(id)
+        return Optional.of(repository.findById(id)
                 .orElseThrow(NotFoundException::new));
     }
 
     public List<ProductDTO> findAll() {
-        return productMapper.convertToDto(productRepository.findAll());
+        return repository
+                .findAll()
+                .stream()
+                .map(mapper::convertToDto)
+                .collect(Collectors.toList());
     }
 
-    public int create(ProductDTO productDto) {
-        Product product = productMapper.convertToEntity(productDto);
-        return productRepository.save(product).getId();
+    public int create(ProductDTO dto) {
+       return Optional
+               .of(mapper.convertToEntity(dto))
+               .map(repository::save)
+               .map(Product::getId)
+               .get();
+
     }
 
     public void deleteById(int id) {
-        productRepository.deleteById(id);
+        repository.deleteById(id);
     }
 
     public ProductDTO update(int id, ProductDTO productDto) {
         return findEntity(id)
-                .map(entity -> productMapper.convertToEntity(productDto, entity))
-                .map(productRepository::save)
-                .map(productMapper::convertToDto).get();
+                .map(entity -> mapper.convertToEntity(productDto, entity))
+                .map(repository::save)
+                .map(mapper::convertToDto)
+                .get();
     }
 
 }

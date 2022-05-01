@@ -10,34 +10,45 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class CustomerService {
-    private final CustomerRepository customerRepository;
-    private final CustomerMapper customerMapper;
+    private final CustomerRepository repository;
+    private final CustomerMapper mapper;
 
     public int create(CustomerDTO dto) {
-        return customerRepository.save(customerMapper.convertToEntity(dto)).getId();
+        return Optional
+                .of(mapper.convertToEntity(dto))
+                .map(repository::save)
+                .map(Customer::getId)
+                .get();
     }
 
     public List<CustomerDTO> findAll() {
-        return customerMapper.convertToDto(customerRepository.findAll());
+        return repository
+                .findAll()
+                .stream()
+                .map(mapper::convertToDto)
+                .collect(Collectors.toList());
     }
 
     public Optional<Customer> findEntity(int id) {
-        return Optional.of(customerRepository.findById(id)
-                .orElseThrow(NotFoundException::new));
+        return Optional
+                .of(repository.findById(id)
+                        .orElseThrow(NotFoundException::new));
     }
 
     public void deleteById(int id) {
-        customerRepository.deleteById(id);
+        repository.deleteById(id);
     }
 
     public CustomerDTO update(int id, CustomerDTO customerDto) {
         return findEntity(id)
-                .map(entity -> customerMapper.convertToEntity(entity, customerDto))
-                .map(customerRepository::save)
-                .map(customerMapper::convertToDto).get();
+                .map(entity -> mapper.convertToEntity(entity, customerDto))
+                .map(repository::save)
+                .map(mapper::convertToDto)
+                .get();
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 
+import javax.persistence.criteria.Order;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,26 +29,29 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class OrderService {
-    private final OrderRepository orderRepository;
+    private final OrderRepository repository;
     private final OrderDetailService orderDetailService;
     private final OrderDetailMapper orderDetailMapper;
-    private final OrderMapper orderMapper;
+    private final OrderMapper mapper;
     private final OrderDetailRepository orderDetailRepository;
-
     private PdfGenerator pdfGenerator;
 
     public int create() {
-        return orderRepository.save(new Orders()).getId();
+        return Optional
+                .of(repository.save(new Orders()))
+                .map(Orders::getId)
+                .get();
     }
 
     public void delete(int id) {
-        orderRepository.deleteById(id);
+        repository.deleteById(id);
     }
 
     public List<Integer> getListOrderDetailId(List<OrderDetailDTO> orderDetailsDto) {
-        return orderDetailsDto.stream()
-                .filter(orderDetail -> orderDetail.getId() != 0)
+        return orderDetailsDto
+                .stream()
                 .map(OrderDetailDTO::getId)
+                .filter(id -> id != 0)
                 .collect(Collectors.toList());
     }
 
@@ -61,22 +65,24 @@ public class OrderService {
     }
 
     public Optional<Orders> findEntity(int id) {
-        return Optional.of(orderRepository.findById(id)
+        return Optional
+                .of(repository.findById(id)
                 .orElseThrow(NotFoundException::new));
     }
 
     public OrderDTO update(int id, OrderDTO orderDto) {
         removeUnuseOrderDetail(id, orderDto.getOrderDetail());
         return findEntity(id)
-                .map(entity -> orderMapper.updateEntity(orderDto, entity))
-                .map(orderRepository::save)
-                .map(orderMapper::convertToDto)
+                .map(entity -> mapper.updateEntity(orderDto, entity))
+                .map(repository::save)
+                .map(mapper::convertToDto)
                 .get();
     }
 
     public List<OrderDTO> findAll() {
-        return Optional.of(orderRepository.findAll())
-                .map(orderMapper::convertToDto)
+        return Optional
+                .of(repository.findAll())
+                .map(mapper::convertToDto)
                 .get();
     }
 

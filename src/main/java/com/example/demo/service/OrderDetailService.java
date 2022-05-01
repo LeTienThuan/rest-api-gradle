@@ -6,33 +6,32 @@ import com.example.demo.repository.OrderDetailRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class OrderDetailService {
     private final ProductService productService;
-    private final OrderDetailRepository orderDetailRepository;
+    private final OrderDetailRepository repository;
 
     public List<OrderDetail> getByOrderId(int orderId){
-        return orderDetailRepository.findByOrdersId(orderId);
+        return repository.findByOrdersId(orderId);
     }
 
     public double calculateTotalMoney(List<OrderDetailDTO> orderDetailsDto){
-        double total = 0;
-        for(OrderDetailDTO dto : orderDetailsDto){
-            total += dto.getTotal();
-        }
-        return total;
+        return orderDetailsDto
+                .stream()
+                .map(OrderDetailDTO::getTotal)
+                .reduce((double) 0, Double::sum);
     }
 
     public List<String> getListProductName(List<OrderDetailDTO> orderDetailsDto){
-        List<String> productsName = new ArrayList<>();
-        for (OrderDetailDTO orderDetailDto : orderDetailsDto) {
-            String productName = productService.findEntity(orderDetailDto.getProductId()).get().getName();
-            productsName.add(productName);
-        }
-        return productsName;
+        return orderDetailsDto
+                .stream()
+                .map(OrderDetailDTO::getProductId)
+                .map(productService::findEntity)
+                .map(entity -> entity.get().getName())
+                .collect(Collectors.toList());
     }
 }
