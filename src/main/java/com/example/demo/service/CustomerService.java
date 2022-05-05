@@ -20,7 +20,7 @@ public class CustomerService {
 
     public int create(CustomerDTO dto) {
         return Optional
-                .of(mapper.convertToEntity(dto))
+                .of(mapper.toEntityIgnoreId(dto))
                 .map(repository::save)
                 .map(Customer::getId)
                 .get();
@@ -30,7 +30,7 @@ public class CustomerService {
         return repository
                 .findAll()
                 .stream()
-                .map(mapper::convertToDto)
+                .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -46,9 +46,9 @@ public class CustomerService {
 
     public CustomerDTO update(int id, CustomerDTO customerDto) {
         return findEntity(id)
-                .map(entity -> mapper.convertToEntity(entity, customerDto))
+                .map(entity -> mapper.toEntityIgnoreId(entity, customerDto))
                 .map(repository::save)
-                .map(mapper::convertToDto)
-                .get();
+                .map(mapper::toDto)
+                .orElseThrow();
     }
 }

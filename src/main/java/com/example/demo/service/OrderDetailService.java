@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,7 +17,9 @@ public class OrderDetailService {
     private final OrderDetailRepository repository;
 
     public List<OrderDetail> getByOrderId(int orderId){
-        return repository.findByOrdersId(orderId);
+        return Optional
+                .of(repository.findByOrdersId(orderId))
+                .orElseThrow();
     }
 
     public double calculateTotalMoney(List<OrderDetailDTO> orderDetailsDto){
@@ -31,7 +34,7 @@ public class OrderDetailService {
                 .stream()
                 .map(OrderDetailDTO::getProductId)
                 .map(productService::findEntity)
-                .map(entity -> entity.get().getName())
+                .map(entity -> entity.orElseThrow().getName())
                 .collect(Collectors.toList());
     }
 }

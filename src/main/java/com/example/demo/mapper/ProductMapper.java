@@ -6,18 +6,14 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import java.util.List;
-
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
-    ProductDTO convertToDto(Product product);
+    ProductDTO toDto(Product product);
 
     @Mapping(target = "id", ignore = true)
-    Product convertToEntity(ProductDTO productDto);
-
-    List<ProductDTO> convertToDto(List<Product> products);
+    Product toEntityIgnoreId(ProductDTO productDto);
 
     @Mapping(target = "id", ignore = true)
-    Product convertToEntity(ProductDTO productDto, @MappingTarget Product product);
+    Product toEntityIgnoreId(ProductDTO productDto, @MappingTarget Product product);
 }

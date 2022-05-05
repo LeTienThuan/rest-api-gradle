@@ -12,18 +12,18 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface OrderDetailMapper {
 
-    OrderDetailDTO convertToDto(OrderDetail orderDetail);
+    OrderDetailDTO toDto(OrderDetail orderDetail);
 
-    List<OrderDetailDTO> convertToDto(List<OrderDetail> orderDetails);
+    List<OrderDetailDTO> toDto(List<OrderDetail> orderDetails);
 
     @Mapping(source = "dto.id", target = "id")
     @Mapping(target = "orders", source = "order")
-    OrderDetail convertToEntity(OrderDetailDTO dto, Orders order);
+    OrderDetail toEntity(OrderDetailDTO dto, Orders order);
 
-    default List<OrderDetail> convertToEntity(List<OrderDetailDTO> orderDetailDto, Orders order) {
+    default List<OrderDetail> toEntity(List<OrderDetailDTO> orderDetailDto, Orders order) {
         List<OrderDetail> list = new ArrayList<>();
         for (OrderDetailDTO orderDetailDTO : orderDetailDto) {
-            list.add(convertToEntity(orderDetailDTO, order));
+            list.add(toEntity(orderDetailDTO, order));
         }
         return list;
     }

@@ -27,13 +27,13 @@ public class ProductService {
         return repository
                 .findAll()
                 .stream()
-                .map(mapper::convertToDto)
+                .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
 
     public int create(ProductDTO dto) {
        return Optional
-               .of(mapper.convertToEntity(dto))
+               .of(mapper.toEntityIgnoreId(dto))
                .map(repository::save)
                .map(Product::getId)
                .get();
@@ -46,10 +46,10 @@ public class ProductService {
 
     public ProductDTO update(int id, ProductDTO productDto) {
         return findEntity(id)
-                .map(entity -> mapper.convertToEntity(productDto, entity))
+                .map(entity -> mapper.toEntityIgnoreId(productDto, entity))
                 .map(repository::save)
-                .map(mapper::convertToDto)
-                .get();
+                .map(mapper::toDto)
+                .orElseThrow();
     }
 
 }

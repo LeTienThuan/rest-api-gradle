@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 
-import javax.persistence.criteria.Order;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -75,21 +74,26 @@ public class OrderService {
         return findEntity(id)
                 .map(entity -> mapper.updateEntity(orderDto, entity))
                 .map(repository::save)
-                .map(mapper::convertToDto)
-                .get();
+                .map(mapper::toDto)
+                .orElseThrow();
     }
 
     public List<OrderDTO> findAll() {
         return Optional
                 .of(repository.findAll())
-                .map(mapper::convertToDto)
-                .get();
+                .map(mapper::toDto)
+                .orElseThrow();
     }
 
     public Context setVariablesInvoiceThymeleafTemplate(int orderId){
-        List<OrderDetailDTO> orderDetailsDto = orderDetailMapper.convertToDto(orderDetailService.getByOrderId(orderId));
+        List<OrderDetailDTO> orderDetailsDto = orderDetailService
+                .getByOrderId(orderId)
+                .stream()
+                .map(orderDetailMapper::toDto)
+                .collect(Collectors.toList());
+
         List<String> productsName = orderDetailService.getListProductName(orderDetailsDto);
-        Orders order = findEntity(orderId).get();
+        Orders order = findEntity(orderId).orElseThrow();
 
         Context context = new Context();
         context.setVariable("items", orderDetailsDto);
@@ -112,7 +116,5 @@ public class OrderService {
         byte[] content =  Files.readAllBytes(file.toPath());
         return new ResponseEntity<>(content, headers, HttpStatus.OK);
     }
-
-
 
 }

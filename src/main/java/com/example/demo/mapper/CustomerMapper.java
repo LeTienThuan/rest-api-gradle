@@ -11,17 +11,15 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CustomerMapper {
 
-    CustomerDTO convertToDto(Customer customer);
+    CustomerDTO toDto(Customer customer);
 
     @Mapping(target = "id", ignore = true)
-    Customer convertToEntity(CustomerDTO customerDTO);
+    Customer toEntityIgnoreId(CustomerDTO customerDTO);
 
-    Customer convertToEntityWithId(CustomerDTO customerDto);
-
-    List<CustomerDTO> convertToDto(List<Customer> customers);
+    Customer toEntity(CustomerDTO customerDto);
 
     @Mapping(target = "id", ignore = true)
-    Customer convertToEntity(@MappingTarget Customer customer, CustomerDTO customerDto);
+    Customer toEntityIgnoreId(@MappingTarget Customer customer, CustomerDTO customerDto);
 
 
 }

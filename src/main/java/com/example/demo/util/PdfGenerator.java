@@ -23,7 +23,7 @@ import java.nio.file.Files;
 
 @Service
 @AllArgsConstructor
-public class PdfGenerator {
+public class  PdfGenerator {
 
     public void readContentFromThymeleaf(String htmlContent, String path) throws IOException {
         FileWriter fw = new FileWriter(path);

@@ -16,14 +16,14 @@ public abstract class OrderMapper {
     @Autowired
     protected OrderDetailMapper orderDetailMapper;
 
-    @Mapping(target = "customer", expression = "java(customerMapper.convertToDto(order.getCustomer()))")
-    @Mapping(target = "orderDetail", expression = "java(orderDetailMapper.convertToDto(order.getOrderDetail()))")
-    public abstract OrderDTO convertToDto(Orders order);
+    @Mapping(target = "customer", expression = "java(customerMapper.toDto(order.getCustomer()))")
+    @Mapping(target = "orderDetail", expression = "java(orderDetailMapper.toDto(order.getOrderDetail()))")
+    public abstract OrderDTO toDto(Orders order);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "customer", expression = "java(customerMapper.convertToEntityWithId(orderDto.getCustomer()))")
-    @Mapping(target = "orderDetail", expression = "java(orderDetailMapper.convertToEntity(orderDto.getOrderDetail(), order))")
+    @Mapping(target = "customer", expression = "java(customerMapper.toEntity(orderDto.getCustomer()))")
+    @Mapping(target = "orderDetail", expression = "java(orderDetailMapper.toEntity(orderDto.getOrderDetail(), order))")
     public abstract Orders updateEntity(OrderDTO orderDto, @MappingTarget Orders order);
 
-    public abstract List<OrderDTO> convertToDto(List<Orders> orders);
+    public abstract List<OrderDTO> toDto(List<Orders> orders);
 }
