@@ -8,6 +8,7 @@ import org.mapstruct.Mapping;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface OrderDetailMapper {
@@ -21,10 +22,9 @@ public interface OrderDetailMapper {
     OrderDetail toEntity(OrderDetailDTO dto, Orders order);
 
     default List<OrderDetail> toEntity(List<OrderDetailDTO> orderDetailDto, Orders order) {
-        List<OrderDetail> list = new ArrayList<>();
-        for (OrderDetailDTO orderDetailDTO : orderDetailDto) {
-            list.add(toEntity(orderDetailDTO, order));
-        }
-        return list;
+        return orderDetailDto
+                .stream()
+                .map(entity -> toEntity(entity, order))
+                .collect(Collectors.toList());
     }
 }
